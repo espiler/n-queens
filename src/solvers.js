@@ -97,3 +97,14 @@ window.countNQueensSolutions = function(n) {
   return count;
 
 };
+
+window.timed = function(fn) {
+  return function() {
+    var start = Date.now();
+    var res = fn.apply({}, arguments)
+    console.log('time for ' + arguments[0] + ' queens: ', Date.now() - start, 'ms');
+    return res;
+  }
+}
+
+window.timednq = timed(countNQueensSolutions);
