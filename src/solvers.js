@@ -39,37 +39,6 @@ window.countNRooksSolutions = function(n) {
   return res;
 };
 
-
-
-// return a matrix (an array of arrays) representing a single nxn chessboard, with n queens placed such that none of them can attack each other
-// window.findNQueensSolution = function(n) {
-//   var result = null;
-//   var board = new Board({n:n});
-//   var currentRow = 0;
-//   var startCol = 0;
-//   while (currentRow < n) {
-//     for (var col = (currentRow === 0 ? startCol : 0); col < n; col++) {
-//       board.togglePiece(currentRow, col);
-//       if (board.hasAnyQueenConflictsOn(currentRow,col)) {
-//         board.togglePiece(currentRow, col);
-//         if (col === n - 1) {
-//           break;
-//         }
-//       } else {
-//         break;
-//       }
-//     }
-//     if (col === n - 1) {
-//       startCol++;
-//       var board = new Board({n:n});
-//       break; //and somehow restart the loop
-//     }
-//     currentRow++;
-//   }
-//   return board.rows();
-// };
-//
-
 window.findNQueensSolution = function(n) {
   if (n === 2 || n === 3 ) {
     return (new Board({n:n})).rows();
@@ -100,25 +69,30 @@ window.findNQueensSolution = function(n) {
 // return the number of nxn chessboards that exist, with n queens placed such that none of them can attack each other
 window.countNQueensSolutions = function(n) {
   var count = 0;
+  var majDiag = [];
+  var minDiag = [];
+  for (var i = 0; i < (2*n); i++) {
+    minDiag[i] = 0;
+    majDiag[i] = 0;
+  }
+  var columns = [];
+  for (var i = 0; i < n; i++) {
+    columns[i] = 0;
+  }
 
-
-  (function sub(n, board, currentRow){
-    var board = board || new Board({n:n});
-    var currentRow = currentRow || 0;
-    // if current row is n
-    if (currentRow === n) {
+  (function tryNext (row) {
+    if (row === n) {
       count++;
-    } else {
-      for (var col = 0; col < n; col++) {
-        board.togglePiece(currentRow, col);
-        if (!board.hasAnyQueenConflictsOn(currentRow,col)) {
-          sub(n, board, currentRow + 1);
-        }
-        board.togglePiece(currentRow, col);
+      return;
+    }
+    for (var col = 0; col < n; col++){
+      if (!columns[col] && !majDiag[col-row+n] && !minDiag[col+row]) {
+        columns[col] = majDiag[col-row+n] = minDiag[col+row] = 1;
+        tryNext(row + 1);
+        columns[col] = majDiag[col-row+n] = minDiag[col+row] = 0;
       }
     }
-
-  })(n);
+  })(0);
 
   return count;
 
