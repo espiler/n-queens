@@ -14,7 +14,7 @@
       for (var i = 0; i < n; i++) {
         window['w'+i] = new Worker("http://127.0.0.1:8080/worker.js");
 
-        worker.onmessage = function(event) {
+        window['w'+i].onmessage = function(event) {
           count++;
           document.getElementById("result").textContent = count;
         };
@@ -24,10 +24,10 @@
         //   throw error;
         // };
 
-        worker.postMessage(JSON.stringify({initialCol: i, n: n}));//you are the worker for the ith column
+        window['w'+i].postMessage(JSON.stringify({initialCol: i, n: n}));//you are the worker for the ith column
       }
     }
-    function countNQueensSolutions (n) {
+    function nq (n) {
       manager(n);
 
       // spawn web workers for all columns in first row
