@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8"  />
+    <title>Test threads fibonacci</title>
+  </head>
+  <body>
+
+  <div id="result"></div>
+
+  <script language="javascript">
+    var count = 0;
+    var manager = function (n){
+      for (var i = 0; i < n; i++) {
+        window['w'+i] = new Worker("http://127.0.0.1:8080/worker.js");
+
+        worker.onmessage = function(event) {
+          count++;
+          document.getElementById("result").textContent = count;
+        };
+
+        // worker.onerror = function(error) {
+        //   console.log("Worker error: " + error.message + "\n");
+        //   throw error;
+        // };
+
+        worker.postMessage(JSON.stringify({initialCol: i, n: n}));//you are the worker for the ith column
+      }
+    }
+    function countNQueensSolutions (n) {
+      manager(n);
+
+      // spawn web workers for all columns in first row
+      for (var col = 0; col < n; col++){
+        window['w'+col].postMessage('start');//go for it worker
+      }
+    };
+
+  </script>
+  </body>
+</html>
