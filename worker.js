@@ -20,11 +20,11 @@ var onmessage = function (event) {
 function countNQueensSolutions () {
   (function tryNext (row) {
     if (row === n) {
-      postmessage('yay');
+      postMessage('yay');
       return;
     }
 
-    for (var col = 1; col < n; col++){
+    for (var col = 0; col < n; col++){
       if (!columns[col] && !majDiag[col-row+n] && !minDiag[col+row]) {
         columns[col] = majDiag[col-row+n] = minDiag[col+row] = 1;
         tryNext(row + 1);
